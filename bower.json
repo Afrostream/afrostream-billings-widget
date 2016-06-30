@@ -11,7 +11,7 @@
     "paper-elements": "PolymerElements/paper-elements#^1.0.1",
     "paper-dialog": "PolymerElements/paper-dialog#^1.0.1",
     "gold-elements": "Polymerelements/gold-elements#^1.0.1",
-    "iron-ajax": "PolymerElements/iron-ajax#~1.1.1"
-    "iron-icon": "PolymerElements/iron-icon#~1.1.1"
+    "iron-ajax": "PolymerElements/iron-ajax#~1.1.1",
+    "iron-icon": "PolymerElements/iron-icon#~1.0.8"
   }
 }
