@@ -4,7 +4,8 @@
   "description": "Afrostream Widget Billing",
   "main": "index.html",
   "scripts": {
-    "start": "babel-node --presets es2015 -- scripts/server.js"
+    "start": "babel-node --presets es2015 -- scripts/server.js",
+    "postinstall": "bower install"
   },
   "keywords": [
     "afrostream",
