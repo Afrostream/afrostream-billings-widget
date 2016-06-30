@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Afrostream Billing Checkout Widget</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Web Components -->
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js">
+  </script>
+  <!-- Imports will go here -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+  <link rel="import" href="bower_components/paper-material/paper-material.html">
+  <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+  <link rel="import" href="bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+  <link rel="import" href="bower_components/neon-animation/animations/scale-up-animation.html">
+  <link rel="import" href="bower_components/neon-animation/animations/fade-out-animation.html">
+  <link rel="import" href="bower_components/paper-toast/paper-toast.html">
+  <link rel="import" href="checkout-form.html">
+
+</head>
+<body unresolved>
+<section onclick="clickHandler(event)">
+  <style is="custom-style">
+    #toast {
+      --paper-toast-background-color: red;
+      --paper-toast-color: white;
+    }
+
+    iron-icon:hover {
+      fill: var(--google-yellow-700);
+    }
+
+  </style>
+  <paper-toast id="toast"></paper-toast>
+  <paper-button data-dialog="animated" raised>S'abonner à Afrostream</paper-button>
+  <paper-dialog id="animated" entry-animation="scale-up-animation"
+                exit-animation="fade-out-animation">
+    <paper-dialog-scrollable>
+      <checkout-form user-reference-uuid="858bb22f-6682-4b36-a425-a5c9237b2c34"></checkout-form>
+    </paper-dialog-scrollable>
+  </paper-dialog>
+</section>
+<script>
+  function clickHandler (e) {
+    var button = e.target;
+    while (!button.hasAttribute('data-dialog') && button !== document.body) {
+      button = button.parentElement;
+    }
+    if (!button.hasAttribute('data-dialog')) {
+      return;
+    }
+    var id = button.getAttribute('data-dialog');
+    var dialog = document.getElementById(id);
+    if (dialog) {
+      dialog.open();
+    }
+  }
+</script>
+</body>
+</html>

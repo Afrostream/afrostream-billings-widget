@@ -1,0 +1,9 @@
+{
+  "name": "afrostream-billings-widget",
+  "description": "Widget Billing for afrostream",
+  "scripts": {},
+  "env": {
+    "NODE_ENV": "staging"
+  },
+  "addons": []
+}

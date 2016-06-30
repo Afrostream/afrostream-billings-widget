@@ -1,0 +1,328 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="bower_components/iron-form/iron-form.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/gold-cc-input/gold-cc-input.html">
+<link rel="import" href="bower_components/gold-email-input/gold-email-input.html">
+<link rel="import" href="bower_components/gold-cc-cvc-input/gold-cc-cvc-input.html">
+<link rel="import" href="bower_components/gold-cc-expiration-input/gold-cc-expiration-input.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="plan-infos.html">
+
+<dom-module id="checkout-form">
+
+  <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      .form-title {
+        position: relative;
+        background: rgba(40, 24, 60, 1);
+        background: -moz-linear-gradient(left, rgba(40, 24, 60, 1) 0%, rgba(90, 47, 131, 1) 51%, rgba(40, 24, 60, 1) 100%);
+        background: -webkit-gradient(left top, right top, color-stop(0%, rgba(40, 24, 60, 1)), color-stop(51%, rgba(90, 47, 131, 1)), color-stop(100%, rgba(40, 24, 60, 1)));
+        background: -webkit-linear-gradient(left, rgba(40, 24, 60, 1) 0%, rgba(90, 47, 131, 1) 51%, rgba(40, 24, 60, 1) 100%);
+        background: -o-linear-gradient(left, rgba(40, 24, 60, 1) 0%, rgba(90, 47, 131, 1) 51%, rgba(40, 24, 60, 1) 100%);
+        background: -ms-linear-gradient(left, rgba(40, 24, 60, 1) 0%, rgba(90, 47, 131, 1) 51%, rgba(40, 24, 60, 1) 100%);
+        background: linear-gradient(to right, rgba(40, 24, 60, 1) 0%, rgba(90, 47, 131, 1) 51%, rgba(40, 24, 60, 1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#28183c', endColorstr='#28183c', GradientType=1);
+        height: 110px;
+        margin: -24px -24px 30px -24px;
+      }
+
+      .avatar {
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAAAvCAMAAACRx3WWAAAABGdBTUEAALGPC/xhBQAAAAFzUkdC AK7OHOkAAAMAUExURUxpcQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAAAAAAAAAICAgAAAAAAAAEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA AAAAAN7e3gAAAAUEAwEBAQAAAAEBAQAAAPf39wICAAICAAICAgMDA/Dw8PX19WRkZFhYWJubm8zM zPzGAOnp6QUFBfX19dfX16urqwAAAPr6+gAAAO3t7i8vL7y8vPn5+RsYCI5uAPL09Pr6+nZ2dtPT 06SkpI6OjrCwsO/v72lpafz8/EVFRcLCwre3tvPz88/Pz8LCwv39/f39/V9fX9HR0TAwMLKysqGh oyQkJIWFhff39/Pz825ubpZ1AMvLy7e3t7m5uZ6ensfHx8nJycjIyI6OjqCgoK+vsLOzs+Li4vr6 +sDAwOjo6GVlZvb29qioqKqqqufn5+7u7mNjZImJiaKio+Pj4+jo6N/f3/39/cHBwcLCwpmZmVFR Uaampt7e3sTExGxsbNvb2x4eHuTk5Hl5ee/v78HBwZycnNfX15WVldDQ0EdHSe63APLy8oxtAJh2 AKuGAOLi4vn5+ezs7Pr6+vj4+NPT07W1teDg4Onp6dra2oKCgra2ttHR0ZeXl+3t7bKystHR0YSE hPj4+HR0dPj4+OLi4uLi4t7e3vz8/KWlpe7u7vn5+c3NzZ+fn46OjsvLy7y8vJKSksbGxj4+Pv7H AL6+vuzs7PHx8d/f30Y3APLy8t3d3ePj49fX1+Xl5dfX1/XBAP////3GAK6urtmqALa2tpOTk56e noyMjMDAwICAgPHx8ZaWlurq6tqrAOWzAOq0AJ99ALOzs/zIAJl4AJ98APDw8P/HAN/f3//JAObm 5vnDALqVAMnJyczMzOvy+oVkAEw6AOa5AK2GAKeRTP/////JAP39/f7///z8/P////n5+ezs7PLy 8urq6vPz8/f39+fn5/fCAOy5AP/NAP/QAO7u7vX19em4AP/RAP7FAIdRG/IAAADqdFJOUwAUEQQF BgcBAgMMPhs0Dzo2JRkIQAoNLD04JB08MRgjKi8LTSIrRUIWM/UtJx4g4cZfUXFM8kpLRuVmKeEh 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 ');
+        background-size: contrain;
+        background-position: center center;
+        background-repeat: no-repeat;
+      }
+
+      .base-line {
+        background-color: #fdc630;
+        color: #5f318c;
+        text-transform: uppercase;
+        font-size: 1em;
+        line-height: 1em;
+        font-weight: bold;
+        padding: 10px 20px 10px 20px;
+        left: 1.5em;
+        right: 1.5em;
+        top: 90px;
+        text-align: center;
+        position: absolute;
+      }
+
+      .coupon-done {
+        text-align: center;
+      }
+
+      gold-cc-expiration-input {
+        width: 50%;
+        margin-right: 20px;
+      }
+
+      paper-button {
+        background-color: #4285f4;
+        color: #fff;
+        margin-top: 10px;
+        width: 100%;
+      }
+
+    </style>
+    <div class="horizontal layout center form-title">
+      <div class="avatar" item-icon></div>
+      <div class="flex base-line">Les meilleurs films et series</div>
+    </div>
+
+    <plan-infos coupons-campaign-billing-uuid="{{ couponsCampaignBillingUuid }}" base-api="{{ baseApi }}"
+                auth="{{ auth }}"></plan-infos>
+
+    <div class="coupon-done layout center" hidden$="{{!success}}">
+      Votre coupon est désormais actif
+      <h3>[[coupon.code]]</h3>
+      Vous pouvez vous rendre sur<br/>
+      <a href="https://afrostream.tv/coupon?code={{ coupon.code }}">
+        https://afrostream.tv/coupon?code=[[coupon.code]]</a> afin de finaliser votre compte
+    </div>
+
+    <form is="iron-form" id="form" hidden$="{{success}}">
+      <gold-email-input id="email" name="email" label="Votre addresse email" required
+                        auto-validate></gold-email-input>
+      <paper-input id="name" name="name" label="Nom sur la carte" required
+                   autocomplete="cc-name"></paper-input>
+      <gold-cc-input id="number" name="cc-number" label="Numero de carte" placeholder="1234 1234 1234 1234"
+                     required auto-validate
+                     card-type="{{typeOfCard}}"></gold-cc-input>
+      <div class="horizontal layout">
+        <gold-cc-expiration-input id="expiration"
+                                  name="cc-expiration" required auto-validate
+                                  label="Expiration"></gold-cc-expiration-input>
+        <gold-cc-cvc-input id="cvc" name="cc-cvc" required auto-validate
+                           card-type="[[typeOfCard]]"></gold-cc-cvc-input>
+      </div>
+      <paper-input-container id="container"
+                             always-float-label>
+        <label>Coupon</label>
+        <input class="paper-input-input" name="coupon" id="coupon" type="text" size="20"/>
+      </paper-input-container>
+      <paper-button type="submit" id="submit" on-click="submitForm">Payer Maintenant</paper-button>
+      <input type="hidden" id="token" value="" name="stripeToken"/>
+      <iron-ajax id="xhr"
+                 hidden
+                 async
+                 on-error="showError"
+                 on-response="handleResponse"
+                 handles-as="json"
+                 method="POST"
+                 auto="true"
+                 headers="{{makeHeaders()}}"
+                 content-type="application/json"
+                 debounce-duration="300">
+      </iron-ajax>
+    </form>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'checkout-form',
+
+      properties: {
+        /*
+         * Auth Billing APIr
+         */
+        auth: {
+          type: Object,
+          value: {
+            user: 'admin',
+            key: 'billingsapirocks'
+          }
+        },
+
+        success: {
+          type: Boolean,
+          value: false
+        },
+
+        coupon: {
+          type: Object,
+          value: {}
+        },
+
+        baseApi: {
+          type: String,
+          value: 'https://afrostream-billings-staging.herokuapp.com/billings/api/'
+        },
+
+        providerName: {
+          type: String,
+          value: 'afr'
+        },
+
+        userReferenceUuid: {
+          type: String,
+          value: 'generate'
+        },
+
+        typeOfCard: ['visa', 'mastercard', 'discover'],
+
+        couponsCampaignBillingUuid: {
+          type: String,
+          value: 'ed2e3cf1-7fc5-4160-bf99-e6effd344c88'
+        },
+
+        /*
+         * Publishable Key for active Stripe account
+         */
+        publishKey: {
+          type: String,
+          value: 'pk_test_s9YFHvFFIjo2gdAL5x4k2ISh'
+        },
+
+        errorMessages: {
+          type: Object,
+          value: {
+            incorrect_number: "Le numéro de carte est incorrect.",
+            invalid_number: "Le numéro de carte n' est pas un numéro de carte de crédit valide.",
+            invalid_expiry_month: "Le mois d'expiration de la carte est incorrect.",
+            invalid_expiry_year: "L'année d'expiration de la carte est incorrect.",
+            invalid_cvc: "Le code de sécurité de la carte est incorrect.",
+            expired_card: "La carte a expiré.",
+            incorrect_cvc: "Le code de sécurité de la carte est incorrecte.",
+            incorrect_zip: "Le code postal est incorrect",
+            card_declined: "La carte a été refusée.",
+            card_error: "La carte est en erreur",
+            missing: "Il n'y a pas de carte sur ce client",
+            processing_error: "Une erreur est survenue lors du traitement de la carte.",
+            rate_limit: "Too many requests hit the API too quickly."
+          }
+        }
+      },
+      makeHeaders: function () {
+        var obj = {};
+        obj.Authorization = 'Basic ' + btoa(this._config.auth.user + ':' + this._config.auth.key);
+        return obj;
+      },
+
+      attached: function () {
+        this._initDom()
+      },
+
+      _initDom: function () {
+        this._loadStripe();
+        this._stripe();
+      },
+
+      disable: function () {
+        return this.$.submit.disabled = true;
+      },
+
+      enable: function () {
+        return this.$.submit.disabled = false;
+      },
+
+      handleResponse: function (data) {
+        this.success = data.detail.response.statusMessage === 'success';
+        this.coupon = data.detail.response.response.coupon;
+      },
+
+      showError: function (error) {
+        this.$.toast = document.querySelector('#toast');
+        this.$.toast.text = this.errorMessages && this.errorMessages.hasOwnProperty(error.code) && this.errorMessages[error.code] || error.message || 'Erreur call api';
+        this.$.toast.open();
+        this.enable();
+        return error;
+      },
+
+      _send: function (status, response) {
+        var xhr = this.$.xhr;
+        if (status == 200) {
+          this.enable();
+          this.$.token.value = response.id;
+          xhr.body = JSON.stringify(this._registerData());
+          xhr.url = this.baseApi + 'coupons/';
+        }
+      },
+
+      _registerData: function () {
+        var email = this.$.email.value;
+        var name = this.$.name.value;
+        var fullName = name.split(' ');
+        var lastName = '';
+        if (fullName.length > 1) {
+          lastName = fullName[1]
+        }
+        return {
+          providerName: this.providerName,
+          userBillingUuid: this.userReferenceUuid,
+          couponsCampaignBillingUuid: this.couponsCampaignBillingUuid,
+          couponsOpts: {
+            customerBankAccountToken: this.$.token.value,
+            recipientEmail: email,
+            recipientFirstName: name,
+            recipientLastName: lastName,
+            couponCode: this.$.coupon.value
+          }
+        }
+      },
+
+      _responseHandler: function (status, response) {
+        if (response.error) {
+          return this.showError(response.error);
+        }
+        this._send(status, response);
+        this.fire('paymentProcessed', {response: response, status: status, data: this._registerData()});
+      },
+
+      submitForm: function (evt) {
+        this._paymentHandler(evt);
+      },
+
+      _paymentHandler: function (evt) {
+        evt.preventDefault();
+        this.disable();
+
+        var dateTab = this.$.expiration.value.split('/');
+
+        var data = {
+          name: this.$.name.value,
+          number: this.$.number.value,
+          cvc: this.$.cvc.value,
+          exp_month: dateTab[0],
+          exp_year: dateTab[1]
+        };
+
+        Stripe.card.createToken(data, this._responseHandler.bind(this));
+        return false;
+      },
+
+      _stripe: function () {
+        if (this._stripeExists()) {
+          Stripe.setPublishableKey(this.publishKey);
+          this.$.form.addEventListener('submit', this._paymentHandler.bind(this), false);
+        } else {
+          setTimeout(this._stripe.bind(this), 0);
+        }
+      },
+
+      _stripeExists: function () {
+        return window['Stripe'] && (typeof window['Stripe'] != "undefined");
+      },
+
+      _loadStripe: function () {
+        var script = document.createElement('script');
+        script.src = 'https://js.stripe.com/v2/';
+        document.body.appendChild(script);
+      }
+    });
+  </script>
+
+</dom-module>
