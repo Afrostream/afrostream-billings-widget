@@ -35,19 +35,12 @@
     "bower": "^1.7.9",
     "connect": "^3.4.1",
     "cowsay": "^1.1.8",
-    "nodemon": "^1.9.1",
-    "npm-run-all": "~1.2.0",
     "portscanner": "^1.0.0",
-    "qunitjs": "^1.0.0",
-    "serve-static": "^1.11.1",
-    "sinon": "1.14.1",
-    "uglify-js": "^2.5.0",
-    "watchify": "^3.6.0",
-    "xhr": "^2.2.0"
+    "serve-static": "^1.11.1"
   },
   "peerDependencies": {},
   "private": true,
   "engines": {
-    "node": "4.4.4"
+    "node": "4.4.5"
   }
 }
