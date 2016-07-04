@@ -1,14 +1,14 @@
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="bower_components/iron-form/iron-form.html">
-<link rel="import" href="bower_components/paper-input/paper-input.html">
-<link rel="import" href="bower_components/paper-button/paper-button.html">
-<link rel="import" href="bower_components/gold-cc-input/gold-cc-input.html">
-<link rel="import" href="bower_components/gold-email-input/gold-email-input.html">
-<link rel="import" href="bower_components/gold-cc-cvc-input/gold-cc-cvc-input.html">
-<link rel="import" href="bower_components/gold-cc-expiration-input/gold-cc-expiration-input.html">
-<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/gold-cc-input/gold-cc-input.html">
+<link rel="import" href="../../bower_components/gold-email-input/gold-email-input.html">
+<link rel="import" href="../../bower_components/gold-cc-cvc-input/gold-cc-cvc-input.html">
+<link rel="import" href="../../bower_components/gold-cc-expiration-input/gold-cc-expiration-input.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="plan-infos.html">
 
 <dom-module id="checkout-form">
@@ -31,7 +31,14 @@
         background: linear-gradient(to right, rgba(40, 24, 60, 1) 0%, rgba(90, 47, 131, 1) 51%, rgba(40, 24, 60, 1) 100%);
         filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#28183c', endColorstr='#28183c', GradientType=1);
         height: 110px;
-        margin: -24px -24px 30px -24px;
+        margin: 0 -24px 24px -24px;
+      }
+
+      .plan-info {
+      }
+
+      #form {
+
       }
 
       .avatar {
@@ -77,57 +84,62 @@
       }
 
     </style>
-    <div class="horizontal layout center form-title">
-      <div class="avatar" item-icon></div>
-      <div class="flex base-line">Les meilleurs films et series</div>
-    </div>
+    <a id="closeBtn" href="#" class="close-thin"></a>
+    <div class="container">
 
-    <plan-infos coupons-campaign-billing-uuid="{{ couponsCampaignBillingUuid }}" base-api="{{ baseApi }}"
-                auth="{{ auth }}"></plan-infos>
-
-    <div class="coupon-done layout center" hidden$="{{!success}}">
-      Votre coupon est désormais actif
-      <h3>[[coupon.code]]</h3>
-      Vous pouvez vous rendre sur<br/>
-      <a href="https://afrostream.tv/coupon?code={{ coupon.code }}">
-        https://afrostream.tv/coupon?code=[[coupon.code]]</a> afin de finaliser votre compte
-    </div>
-
-    <form is="iron-form" id="form" hidden$="{{success}}">
-      <gold-email-input id="email" name="email" label="Votre addresse email" required
-                        auto-validate></gold-email-input>
-      <paper-input id="name" name="name" label="Nom sur la carte" required
-                   autocomplete="cc-name"></paper-input>
-      <gold-cc-input id="number" name="cc-number" label="Numero de carte" placeholder="1234 1234 1234 1234"
-                     required auto-validate
-                     card-type="{{typeOfCard}}"></gold-cc-input>
-      <div class="horizontal layout">
-        <gold-cc-expiration-input id="expiration"
-                                  name="cc-expiration" required auto-validate
-                                  label="Expiration"></gold-cc-expiration-input>
-        <gold-cc-cvc-input id="cvc" name="cc-cvc" required auto-validate
-                           card-type="[[typeOfCard]]"></gold-cc-cvc-input>
+      <div class="horizontal layout center form-title">
+        <div class="avatar" item-icon></div>
+        <div class="flex base-line">Les meilleurs films et series</div>
       </div>
-      <paper-input-container id="container"
-                             always-float-label>
-        <label>Coupon</label>
-        <input class="paper-input-input" name="coupon" id="coupon" type="text" size="20"/>
-      </paper-input-container>
-      <paper-button type="submit" id="submit" on-click="submitForm">Payer Maintenant</paper-button>
-      <input type="hidden" id="token" value="" name="stripeToken"/>
-      <iron-ajax id="xhr"
-                 hidden
-                 async
-                 on-error="showError"
-                 on-response="handleResponse"
-                 handles-as="json"
-                 method="POST"
-                 auto="true"
-                 headers="{{makeHeaders()}}"
-                 content-type="application/json"
-                 debounce-duration="300">
-      </iron-ajax>
-    </form>
+
+      <plan-infos class="plan-info" coupons-campaign-billing-uuid="{{ couponsCampaignBillingUuid }}"
+                  base-api="{{ baseApi }}"
+                  auth="{{ auth }}"></plan-infos>
+
+      <div class="coupon-done layout center" hidden$="{{!success}}">
+        Votre coupon est désormais actif
+        <h3>[[coupon.code]]</h3>
+        Vous pouvez vous rendre sur<br/>
+        <a href="https://afrostream.tv/coupon?code={{ coupon.code }}">
+          https://afrostream.tv/coupon?code=[[coupon.code]]</a> afin de finaliser votre compte
+      </div>
+
+      <form is="iron-form" id="form" hidden$="{{success}}">
+        <gold-email-input id="email" name="email" label="Votre addresse email" required
+                          auto-validate></gold-email-input>
+        <paper-input id="name" name="name" label="Nom sur la carte" required
+                     autocomplete="cc-name"></paper-input>
+        <gold-cc-input id="number" name="cc-number" label="Numero de carte" placeholder="1234 1234 1234 1234"
+                       required auto-validate
+                       card-type="{{typeOfCard}}"></gold-cc-input>
+        <div class="horizontal layout">
+          <gold-cc-expiration-input id="expiration"
+                                    name="cc-expiration" required auto-validate
+                                    label="Expiration"></gold-cc-expiration-input>
+          <gold-cc-cvc-input id="cvc" name="cc-cvc" required auto-validate
+                             card-type="[[typeOfCard]]"></gold-cc-cvc-input>
+        </div>
+        <paper-input-container id="container"
+                               always-float-label>
+          <label>Coupon</label>
+          <input class="paper-input-input" name="coupon" id="coupon" type="text" size="20"/>
+        </paper-input-container>
+        <paper-button type="submit" id="submit" on-click="submitForm">Payer Maintenant</paper-button>
+        <input type="hidden" id="token" value="" name="stripeToken"/>
+        <iron-ajax id="xhr"
+                   hidden
+                   async
+                   on-error="showError"
+                   on-response="handleResponse"
+                   handles-as="json"
+                   method="POST"
+                   auto="true"
+                   headers="{{makeHeaders()}}"
+                   content-type="application/json"
+                   debounce-duration="300">
+        </iron-ajax>
+      </form>
+    </div>
   </template>
 
   <script>

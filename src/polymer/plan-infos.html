@@ -1,6 +1,6 @@
-<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/iron-form/iron-form.html">
-<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 
 <dom-module id="plan-infos">
 
@@ -12,7 +12,7 @@
         padding: 10px 0 0 0;
       }
 
-      .container {
+      .container-plan {
         @apply(--layout-horizontal);
       }
 
@@ -43,7 +43,7 @@
     <h2>[[coupon.internalPlan.name]]</h2>
     <iron-image src="[[coupon.internalPlan.thumb]]" width="256" height="256" sizing="cover" preload
                 fade></iron-image>
-    <div class="container total">
+    <div class="container-plan total">
       <div class="flex3child">
         [[coupon.internalPlan.description]]
       </div>

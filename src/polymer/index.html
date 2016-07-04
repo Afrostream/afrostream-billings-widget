@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Afrostream Billing Checkout Widget</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Web Components -->
+  <script src="../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../dist/rpc.js"></script>
+  <!-- Imports will go here -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+  <link rel="import" href="../../bower_components/paper-material/paper-material.html">
+  <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+  <link rel="import" href="checkout-form.html">
+
+</head>
+<body unresolved>
+
+<video autoplay
+       poster="https://afrostream.imgix.net/production/poster/2016/03/b8a6db25a04982c88a2b-438302.jpg?crop=faces&fit=clip&w=1280&q=65&fm=jpg"
+       id="bgvid" loop>
+  <!-- WCAG general accessibility recommendation is that media such as background video play through only once. Loop turned on for the purposes of illustration; if removed, the end of the video will fade in the same way created by pressing the "Pause" button  -->
+  <source src="http://thenewcode.com/assets/videos/polina.mp4" type="video/mp4">
+</video>
+
+<section>
+  <style is="custom-style">
+    #toast {
+      --paper-toast-background-color: red;
+      --paper-toast-color: white;
+    }
+
+    iron-icon:hover {
+      fill: var(--google-yellow-700);
+    }
+
+  </style>
+  <div id="backdrop" class="background"/>
+  <paper-toast id="toast"></paper-toast>
+  <checkout-form class="card" user-reference-uuid="858bb22f-6682-4b36-a425-a5c9237b2c34"></checkout-form>
+</section>
+
+<script>
+  var backdrop = document.getElementById('backdrop');
+  var closeBtn = document.getElementById('closeBtn');
+  if (backdrop) {
+    var rpc = new RPC(window.opener || window.parent || window, {
+      host: window.location.origin
+    });
+//    rpc.methods.preload = this.preload;
+//    rpc.methods.render = this.render;
+    rpc.methods.open = function () {
+      console.log('rpc open');
+    };
+    rpc.methods.close = function () {
+      console.log('rpc close');
+    };
+    rpc.methods.closed = function () {
+      console.log('rpc closed');
+    };
+    rpc.methods.rpcError = function (err) {
+      console.log('rpcError err');
+      return alert("It appears that the page that launched Checkout is no longer open. We are unable to complete your payment and you haven't been charged. Please try again or contact support@stripe.com if the problem persists.")
+    };
+    rpc.startSession();
+    backdrop.addEventListener('mousedown', function (e) {
+      if (e.target === backdrop || e.target === closeBtn) {
+        rpc.invoke('closed');
+      }
+    }.bind(this));
+  }
+</script>
+
+</body>
+</html>
