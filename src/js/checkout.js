@@ -20,7 +20,7 @@ const myObject = {
   open,
   options: {
     host: 'http://localhost:9999/',//'https://widget.afrostream.tv/',
-    path: '/src/polymer/index.html'
+    path: '/src/polymer/index-v.html'
   }
 }
 
