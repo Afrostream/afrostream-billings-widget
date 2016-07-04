@@ -3,12 +3,21 @@ body {
   font-size: 14px;
   margin: 0;
   padding: 24px;
-  opacity: 1;
-  animation-name: showFrame;
-  animation-duration: 2.4s;
 }
 
 .background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: url('https://afrostream.imgix.net/production/poster/2016/03/b8a6db25a04982c88a2b-438302.jpg?crop=faces&fit=clip&w=1280&q=65&fm=jpg') no-repeat;
+  background-size: cover;
+  opacity: 0.98;
+}
+
+.background::after {
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -30,10 +39,6 @@ video {
   background: url('https://afrostream.imgix.net/production/poster/2016/03/b8a6db25a04982c88a2b-438302.jpg?crop=faces&fit=clip&w=1280&q=65&fm=jpg') no-repeat;
   background-size: cover;
   transition: 1s opacity;
-
-  opacity: 1;
-  animation-name: showFrame;
-  animation-duration: 2.4s;
 }
 
 .card {
@@ -58,9 +63,15 @@ video {
   -o-transition: 200ms opacity ease;
   transition: 200ms opacity ease;
 
+  visibility: hidden;
+  opacity: 0;
+}
+
+.card.opened {
   opacity: 1;
+  visibility: visible;
+  animation-duration: 0.4s;
   animation-name: showFrame;
-  animation-duration: 2.4s;
 }
 
 .card > .container {

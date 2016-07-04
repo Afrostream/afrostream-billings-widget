@@ -30,14 +30,16 @@
     }
 
   </style>
-  <div id="backdrop" class="background"/>
+  <div id="backdrop" class="background"></div>
   <paper-toast id="toast"></paper-toast>
-  <checkout-form class="card" user-reference-uuid="858bb22f-6682-4b36-a425-a5c9237b2c34"></checkout-form>
+  <checkout-form id="cardCheckout" class="card"
+                 user-reference-uuid="858bb22f-6682-4b36-a425-a5c9237b2c34"></checkout-form>
 </section>
 
 <script>
   var backdrop = document.getElementById('backdrop');
   var closeBtn = document.getElementById('closeBtn');
+  var cardCheckout = document.getElementById('cardCheckout');
   if (backdrop) {
     var rpc = new RPC(window.opener || window.parent || window, {
       host: window.location.origin
@@ -45,7 +47,7 @@
 //    rpc.methods.preload = this.preload;
 //    rpc.methods.render = this.render;
     rpc.methods.open = function () {
-      console.log('rpc open');
+      cardCheckout.classList.toggle('opened');
     };
     rpc.methods.close = function () {
       console.log('rpc close');

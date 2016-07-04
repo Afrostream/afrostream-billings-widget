@@ -33,7 +33,7 @@ var myObject = {
   version: version,
   open: open,
   options: {
-    host: 'http://localhost:9999/', //'https://widget.afrostream.tv/',
+    host: '//widget.afrostream.tv/',
     path: '/dist/index.v.html'
   }
 };
