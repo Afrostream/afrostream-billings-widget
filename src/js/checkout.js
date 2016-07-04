@@ -19,7 +19,7 @@ const myObject = {
   version,
   open,
   options: {
-    host: 'https://widget.afrostream.tv/',
+    host: '//widget.afrostream.tv/',
     path: '/dist/index.v.html'
   }
 }
