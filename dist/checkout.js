@@ -117,7 +117,7 @@ var Button = function () {
       this.$style = document.createElement('link');
       this.$style.setAttribute('type', 'text/css');
       this.$style.setAttribute('rel', 'stylesheet');
-      this.$style.setAttribute('href', this.view.getHost() + 'src/css/checkout.css');
+      this.$style.setAttribute('href', this.view.getHost() + 'dist/checkout.min.css');
       return _utils2.default.append(this.$el, this.$span);
     }
   }, {

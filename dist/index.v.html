@@ -19159,6 +19159,8 @@ style this element.
 
       .coupon-done {
         text-align: center;
+        border-top: 1px solid #e0e0e0;
+        padding: 10px 20px 10px 20px;
       }
 
       gold-cc-expiration-input {
@@ -19202,7 +19204,6 @@ style this element.
         </div>
         <paper-input-container id="container" always-float-label="">
           <label>Coupon</label>
-          <input class="paper-input-input" name="coupon" id="coupon" type="text" size="20">
         </paper-input-container>
         <paper-button type="submit" id="submit" on-click="submitForm">Payer Maintenant</paper-button>
         <input type="hidden" id="token" value="" name="stripeToken">
@@ -19350,8 +19351,7 @@ style this element.
             customerBankAccountToken: this.$.token.value,
             recipientEmail: email,
             recipientFirstName: name,
-            recipientLastName: lastName,
-            couponCode: this.$.coupon.value
+            recipientLastName: lastName
           }
         }
       },
