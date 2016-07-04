@@ -13,6 +13,7 @@
     "build": "npm-run-all -p build:*",
     "build:polymer": "vulcanize src/polymer/index.html --inline-script --inline-css > dist/index.v.html | crisper -h dist/index.v.html -j dist/element.js",
     "build:sources": "browserify src/js/checkout.js -o dist/checkout.js",
+    "build:css": "lessc --clean-css src/css/checkout.less dist/checkout.min.css",
     "build:rpc": "browserify src/js/core/rpc.js -o dist/rpc.js",
     "postinstall": "bower install && npm run build"
   },
@@ -51,6 +52,7 @@
     "cowsay": "^1.1.8",
     "crisper": "^2.0.2",
     "less": "^2.7.1",
+    "less-plugin-clean-css": "^1.5.1",
     "npm-run-all": "^2.3.0",
     "portscanner": "^1.0.0",
     "serve-static": "^1.11.1",
