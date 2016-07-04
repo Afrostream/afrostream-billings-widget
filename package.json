@@ -10,10 +10,10 @@
     "watch": "npm run mkdirs && npm-run-all -p watch:*",
     "watch:js": "watchify -v -t babelify src/js/checkout.js -o dist/checkout.js",
     "build": "npm-run-all -p build:*",
-    "build:polymer": "vulcanize src/polymer/index.html --inline-script --inline-css > src/polymer/index.v.html",
+    "build:polymer": "vulcanize src/polymer/index.html --inline-script --inline-css > dist/index.v.html",
     "build:sources": "browserify src/js/checkout.js -o dist/checkout.js",
     "build:rpc": "browserify src/js/core/rpc.js -o dist/rpc.js",
-    "postinstall": "bower install"
+    "postinstall": "bower install && npm run build"
   },
   "keywords": [
     "afrostream",
