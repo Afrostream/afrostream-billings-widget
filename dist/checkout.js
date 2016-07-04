@@ -23,9 +23,7 @@ var open = function open() {
   this.path = this.options.path;
   console.log(this.name, this.host);
   this.view = new _iframe2.default(this.host, this.path);
-  this.button = new _button2.default(this.view, {
-    label: 'toto'
-  });
+  this.button = new _button2.default(this.view);
 };
 
 var myObject = {
@@ -64,11 +62,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Button = function () {
-  function Button(view, options) {
+  function Button(view) {
     _classCallCheck(this, Button);
 
     this.view = view;
-    this.options = options;
     this.$el = document.createElement('button');
     this.$el.setAttribute('role', 'button');
     this.$el.className = 'stripe-button-el';
@@ -98,6 +95,7 @@ var Button = function () {
     _utils2.default.addClass(element, 'active');
     this.scriptEl = element;
     this.document = this.scriptEl.ownerDocument;
+    this.options = this.parseOptions();
     this.render();
     this.append();
   }
@@ -206,6 +204,26 @@ var Button = function () {
       var _ref1 = void 0,
           _ref2 = void 0;
       return ((_ref1 = this.document) != null ? _ref1.head : void 0) || ((_ref2 = this.document) != null ? _ref2.getElementsByTagName('head')[0] : void 0) || this.document.body;
+    }
+  }, {
+    key: 'parseOptions',
+    value: function parseOptions() {
+      var attr = void 0,
+          match = void 0,
+          options = void 0,
+          _i = void 0,
+          _len = void 0,
+          _ref1 = void 0;
+      options = {};
+      _ref1 = this.scriptEl.attributes;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        attr = _ref1[_i];
+        match = attr.name.match(/^data-(.+)$/);
+        if (match != null ? match[1] : void 0) {
+          options[match[1]] = attr.value;
+        }
+      }
+      return options;
     }
   }]);
 

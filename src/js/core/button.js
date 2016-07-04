@@ -3,9 +3,8 @@ import utils from './utils'
 
 class Button {
 
-  constructor (view, options) {
+  constructor (view) {
     this.view = view
-    this.options = options
     this.$el = document.createElement('button')
     this.$el.setAttribute('role', 'button')
     this.$el.className = 'stripe-button-el'
@@ -33,6 +32,7 @@ class Button {
     utils.addClass(element, 'active')
     this.scriptEl = element
     this.document = this.scriptEl.ownerDocument
+    this.options = this.parseOptions()
     this.render()
     this.append()
   }
@@ -125,6 +125,21 @@ class Button {
     let _ref1, _ref2
     return ((_ref1 = this.document) != null ? _ref1.head : void 0) || ((_ref2 = this.document) != null ? _ref2.getElementsByTagName('head')[0] : void 0) || this.document.body
   }
+
+  parseOptions () {
+    let attr, match, options, _i, _len, _ref1
+    options = {}
+    _ref1 = this.scriptEl.attributes
+    for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+      attr = _ref1[_i]
+      match = attr.name.match(/^data-(.+)$/)
+      if (match != null ? match[1] : void 0) {
+        options[match[1]] = attr.value
+      }
+    }
+    return options
+  }
+
 }
 
 export

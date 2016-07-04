@@ -9,9 +9,7 @@ const open = function () {
   this.path = this.options.path
   console.log(this.name, this.host)
   this.view = new IframeView(this.host, this.path)
-  this.button = new Button(this.view, {
-    label: 'toto'
-  })
+  this.button = new Button(this.view)
 }
 
 const myObject = {
