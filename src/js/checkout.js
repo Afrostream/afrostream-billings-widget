@@ -19,7 +19,7 @@ const myObject = {
   version,
   open,
   options: {
-    host: process.env.NODE_ENV ? 'https://widget.afrostream.tv/' : 'http://localhost:9999/',
+    host: 'https://widget.afrostream.tv/',
     path: '/dist/index.v.html'
   }
 }
