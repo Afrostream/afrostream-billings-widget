@@ -122,7 +122,6 @@
         <paper-input-container id="container"
                                always-float-label>
           <label>Coupon</label>
-          <input class="paper-input-input" name="coupon" id="coupon" type="text" size="20"/>
         </paper-input-container>
         <paper-button type="submit" id="submit" on-click="submitForm">Payer Maintenant</paper-button>
         <input type="hidden" id="token" value="" name="stripeToken"/>
@@ -280,8 +279,7 @@
             customerBankAccountToken: this.$.token.value,
             recipientEmail: email,
             recipientFirstName: name,
-            recipientLastName: lastName,
-            couponCode: this.$.coupon.value
+            recipientLastName: lastName
           }
         }
       },
