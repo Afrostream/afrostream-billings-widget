@@ -96,7 +96,7 @@
 
       <plan-infos class="plan-info" coupons-campaign-billing-uuid="{{ couponsCampaignBillingUuid }}"
                   base-api="{{ baseApi }}"
-                  auth="{{ auth }}"></plan-infos>
+                  billing-api-key="{{ billingApiKey }}"></plan-infos>
 
       <div class="coupon-done layout center" hidden$="{{!success}}">
         Votre coupon est désormais actif
@@ -121,10 +121,6 @@
           <gold-cc-cvc-input id="cvc" name="cc-cvc" required auto-validate
                              card-type="[[typeOfCard]]"></gold-cc-cvc-input>
         </div>
-        <paper-input-container id="container"
-                               always-float-label>
-          <label>Coupon</label>
-        </paper-input-container>
         <paper-button type="submit" id="submit" on-click="submitForm">Payer Maintenant</paper-button>
         <input type="hidden" id="token" value="" name="stripeToken"/>
         <iron-ajax id="xhr"
@@ -135,7 +131,7 @@
                    handles-as="json"
                    method="POST"
                    auto="true"
-                   headers="{{makeHeaders()}}"
+                   params='{{createParams()}}'
                    content-type="application/json"
                    debounce-duration="300">
         </iron-ajax>
@@ -152,12 +148,9 @@
         /*
          * Auth Billing APIr
          */
-        auth: {
-          type: Object,
-          value: {
-            user: 'admin',
-            key: 'billingsapirocks'
-          }
+        billingApiKey: {
+          type: String,
+          value: '1f71e0f4ac9b47cd93bf269e4017abaab9d3bd63'
         },
 
         success: {
@@ -172,10 +165,11 @@
 
         baseApi: {
           type: String,
-          value: 'https://afrostream-billings-staging.herokuapp.com/billings/api/'
+          //value: 'https://afrostream-api-v1-herokuapp-com.global.ssl.fastly.net/api/billings/'
+          value: 'https://afr-api-v1-staging.herokuapp.com/api/billings/'
         },
 
-        providerName: {
+        billingProviderName: {
           type: String,
           value: 'afr'
         },
@@ -219,9 +213,24 @@
           }
         }
       },
-      makeHeaders: function () {
+
+      qs: function () {
+        var a = window.location.search.substr(1).split('&')
+        if (a == '') return {};
+        var b = {};
+        for (var i = 0; i < a.length; ++i) {
+          var p = a[i].split('=', 2);
+          if (p.length == 1)
+            b[p[0]] = '';
+          else
+            b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, ' '));
+        }
+        return b;
+      },
+
+      createParams: function () {
         var obj = {};
-        obj.Authorization = 'Basic ' + btoa(this._config.auth.user + ':' + this._config.auth.key);
+        obj.billingApiKey = this.qs().key || this._config.billingApiKey
         return obj;
       },
 
@@ -243,8 +252,9 @@
       },
 
       handleResponse: function (data) {
-        this.success = data.detail.response.statusMessage === 'success';
-        this.coupon = data.detail.response.response.coupon;
+        this.coupon = data.detail.response.coupon;
+        this.success = this.coupon && this.coupon.code;
+        this.enable();
       },
 
       showError: function (error) {
@@ -258,7 +268,6 @@
       _send: function (status, response) {
         var xhr = this.$.xhr;
         if (status == 200) {
-          this.enable();
           this.$.token.value = response.id;
           xhr.body = JSON.stringify(this._registerData());
           xhr.url = this.baseApi + 'coupons/';
@@ -274,7 +283,7 @@
           lastName = fullName[1]
         }
         return {
-          providerName: this.providerName,
+          billingProviderName: this.billingProviderName,
           userBillingUuid: this.userReferenceUuid,
           couponsCampaignBillingUuid: this.couponsCampaignBillingUuid,
           couponsOpts: {

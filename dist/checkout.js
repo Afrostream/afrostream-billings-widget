@@ -31,7 +31,8 @@ var myObject = {
   version: version,
   open: open,
   options: {
-    host: '//widget.afrostream.tv/',
+    host: '//localhost:9999/',
+    //host: '//widget.afrostream.tv/',
     path: '/dist/index.v.html'
   }
 };
@@ -68,11 +69,11 @@ var Button = function () {
     this.view = view;
     this.$el = document.createElement('button');
     this.$el.setAttribute('role', 'button');
-    this.$el.className = 'stripe-button-el';
+    this.$el.className = 'afrostream-button-el';
     _helpers2.default.bind(this.$el, 'click', this.submit.bind(this));
     _helpers2.default.bind(this.$el, 'touchstart', function () {});
 
-    var element = _utils2.default.$$('stripe-button');
+    var element = _utils2.default.$$('afrostream-button');
     element = function () {
       var _i = void 0,
           _len = void 0,
@@ -95,7 +96,7 @@ var Button = function () {
     _utils2.default.addClass(element, 'active');
     this.scriptEl = element;
     this.document = this.scriptEl.ownerDocument;
-    this.options = this.parseOptions();
+    this.view.options = this.options = this.parseOptions();
     this.render();
     this.append();
   }
@@ -718,7 +719,7 @@ var IframeView = function () {
       _helpers2.default.bind(iframe, 'load', function () {
         return iframe.style.visibility = 'visible';
       });
-      iframe.src = this.host + this.path;
+      iframe.src = this.host + this.path + '?key=' + this.options.key;
       iframe.className = iframe.name = 'stripe_checkout_app';
 
       iframe.onload = iframe.onreadystatechange = function () {

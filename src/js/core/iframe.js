@@ -118,7 +118,7 @@ export default class IframeView {
     helpers.bind(iframe, 'load', function () {
       return iframe.style.visibility = 'visible'
     })
-    iframe.src = this.host + this.path
+    iframe.src = this.host + this.path + '?key=' + this.options.key
     iframe.className = iframe.name = 'stripe_checkout_app'
 
     iframe.onload = iframe.onreadystatechange = ()=> {

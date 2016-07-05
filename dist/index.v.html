@@ -35,7 +35,7 @@ body {
   right: 0;
   background: url("https://afrostream.imgix.net/production/poster/2016/03/b8a6db25a04982c88a2b-438302.jpg?crop=faces&fit=clip&w=1280&q=65&fm=jpg") no-repeat;
   background-size: cover;
-  opacity: 0.9;
+  opacity: 0.98;
 }
 
 .background::after {
@@ -19034,7 +19034,7 @@ style this element.
         @apply(--layout-flex-3);
       }
     </style>
-    <iron-ajax id="xhr" hidden="" async="" on-error="showError" handles-as="json" method="GET" auto="true" headers="{{makeHeaders()}}" on-response="handleResponse" content-type="application/json" debounce-duration="300">
+    <iron-ajax id="xhr" hidden="" async="" on-error="showError" handles-as="json" method="GET" auto="true" params="{{createParams()}}" on-response="handleResponse" content-type="application/json" debounce-duration="300">
     </iron-ajax>
     <h2>[[coupon.internalPlan.name]]</h2>
     <iron-image src="[[coupon.internalPlan.thumb]]" width="256" height="256" sizing="cover" preload="" fade=""></iron-image>
@@ -19068,12 +19068,9 @@ style this element.
         /*
          * Auth Billing APIr
          */
-        auth: {
-          type: Object,
-          value: {
-            user: '',
-            key: ''
-          }
+        billingApiKey: {
+          type: String,
+          value: 'none'
         },
 
         coupon: {
@@ -19083,12 +19080,26 @@ style this element.
       },
 
       handleResponse: function (data) {
-        this.coupon = data.detail.response.response.couponsCampaign;
+        this.coupon = data.detail.response.couponsCampaign;
       },
 
-      makeHeaders: function () {
+      qs: function () {
+        var a = window.location.search.substr(1).split('&')
+        if (a == '') return {};
+        var b = {};
+        for (var i = 0; i < a.length; ++i) {
+          var p = a[i].split('=', 2);
+          if (p.length == 1)
+            b[p[0]] = '';
+          else
+            b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, ' '));
+        }
+        return b;
+      },
+
+      createParams: function () {
         var obj = {};
-        obj.Authorization = 'Basic ' + btoa(this._config.auth.user + ':' + this._config.auth.key);
+        obj.billingApiKey = this.qs().key || this._config.billingApiKey
         return obj;
       },
 
@@ -19195,7 +19206,7 @@ style this element.
         <div class="flex base-line">Les meilleurs films et series</div>
       </div>
 
-      <plan-infos class="plan-info" coupons-campaign-billing-uuid="{{ couponsCampaignBillingUuid }}" base-api="{{ baseApi }}" auth="{{ auth }}"></plan-infos>
+      <plan-infos class="plan-info" coupons-campaign-billing-uuid="{{ couponsCampaignBillingUuid }}" base-api="{{ baseApi }}" billing-api-key="{{ billingApiKey }}"></plan-infos>
 
       <div class="coupon-done layout center" hidden$="{{!success}}">
         Votre coupon est désormais actif
@@ -19213,12 +19224,9 @@ style this element.
           <gold-cc-expiration-input id="expiration" name="cc-expiration" required="" auto-validate="" label="Expiration"></gold-cc-expiration-input>
           <gold-cc-cvc-input id="cvc" name="cc-cvc" required="" auto-validate="" card-type="[[typeOfCard]]"></gold-cc-cvc-input>
         </div>
-        <paper-input-container id="container" always-float-label="">
-          <label>Coupon</label>
-        </paper-input-container>
         <paper-button type="submit" id="submit" on-click="submitForm">Payer Maintenant</paper-button>
         <input type="hidden" id="token" value="" name="stripeToken">
-        <iron-ajax id="xhr" hidden="" async="" on-error="showError" on-response="handleResponse" handles-as="json" method="POST" auto="true" headers="{{makeHeaders()}}" content-type="application/json" debounce-duration="300">
+        <iron-ajax id="xhr" hidden="" async="" on-error="showError" on-response="handleResponse" handles-as="json" method="POST" auto="true" params="{{createParams()}}" content-type="application/json" debounce-duration="300">
         </iron-ajax>
       </form>
     </div>
@@ -19233,12 +19241,9 @@ style this element.
         /*
          * Auth Billing APIr
          */
-        auth: {
-          type: Object,
-          value: {
-            user: 'admin',
-            key: 'billingsapirocks'
-          }
+        billingApiKey: {
+          type: String,
+          value: '1f71e0f4ac9b47cd93bf269e4017abaab9d3bd63'
         },
 
         success: {
@@ -19253,10 +19258,11 @@ style this element.
 
         baseApi: {
           type: String,
-          value: 'https://afrostream-billings-staging.herokuapp.com/billings/api/'
+          //value: 'https://afrostream-api-v1-herokuapp-com.global.ssl.fastly.net/api/billings/'
+          value: 'https://afr-api-v1-staging.herokuapp.com/api/billings/'
         },
 
-        providerName: {
+        billingProviderName: {
           type: String,
           value: 'afr'
         },
@@ -19300,9 +19306,24 @@ style this element.
           }
         }
       },
-      makeHeaders: function () {
+
+      qs: function () {
+        var a = window.location.search.substr(1).split('&')
+        if (a == '') return {};
+        var b = {};
+        for (var i = 0; i < a.length; ++i) {
+          var p = a[i].split('=', 2);
+          if (p.length == 1)
+            b[p[0]] = '';
+          else
+            b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, ' '));
+        }
+        return b;
+      },
+
+      createParams: function () {
         var obj = {};
-        obj.Authorization = 'Basic ' + btoa(this._config.auth.user + ':' + this._config.auth.key);
+        obj.billingApiKey = this.qs().key || this._config.billingApiKey
         return obj;
       },
 
@@ -19324,8 +19345,9 @@ style this element.
       },
 
       handleResponse: function (data) {
-        this.success = data.detail.response.statusMessage === 'success';
-        this.coupon = data.detail.response.response.coupon;
+        this.coupon = data.detail.response.coupon;
+        this.success = this.coupon && this.coupon.code;
+        this.enable();
       },
 
       showError: function (error) {
@@ -19339,7 +19361,6 @@ style this element.
       _send: function (status, response) {
         var xhr = this.$.xhr;
         if (status == 200) {
-          this.enable();
           this.$.token.value = response.id;
           xhr.body = JSON.stringify(this._registerData());
           xhr.url = this.baseApi + 'coupons/';
@@ -19355,7 +19376,7 @@ style this element.
           lastName = fullName[1]
         }
         return {
-          providerName: this.providerName,
+          billingProviderName: this.billingProviderName,
           userBillingUuid: this.userReferenceUuid,
           couponsCampaignBillingUuid: this.couponsCampaignBillingUuid,
           couponsOpts: {
@@ -19463,7 +19484,12 @@ style this element.
     };
     rpc.startSession();
     backdrop.addEventListener('mousedown', function (e) {
-      if (e.target === backdrop || e.target === closeBtn) {
+      if (e.target === backdrop) {
+        rpc.invoke('closed');
+      }
+    }.bind(this));
+    closeBtn.addEventListener('mousedown', function (e) {
+      if (e.target === closeBtn) {
         rpc.invoke('closed');
       }
     }.bind(this));

@@ -61,7 +61,12 @@
     };
     rpc.startSession();
     backdrop.addEventListener('mousedown', function (e) {
-      if (e.target === backdrop || e.target === closeBtn) {
+      if (e.target === backdrop) {
+        rpc.invoke('closed');
+      }
+    }.bind(this));
+    closeBtn.addEventListener('mousedown', function (e) {
+      if (e.target === closeBtn) {
         rpc.invoke('closed');
       }
     }.bind(this));

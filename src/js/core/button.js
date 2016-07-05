@@ -7,12 +7,12 @@ class Button {
     this.view = view
     this.$el = document.createElement('button')
     this.$el.setAttribute('role', 'button')
-    this.$el.className = 'stripe-button-el'
+    this.$el.className = 'afrostream-button-el'
     helpers.bind(this.$el, 'click', this.submit.bind(this))
     helpers.bind(this.$el, 'touchstart', function () {
     });
 
-    let element = utils.$$('stripe-button');
+    let element = utils.$$('afrostream-button')
     element = function () {
       let _i, _len, _results, el
       _results = []
@@ -32,7 +32,7 @@ class Button {
     utils.addClass(element, 'active')
     this.scriptEl = element
     this.document = this.scriptEl.ownerDocument
-    this.options = this.parseOptions()
+    this.view.options = this.options = this.parseOptions()
     this.render()
     this.append()
   }

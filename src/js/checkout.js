@@ -17,7 +17,8 @@ const myObject = {
   version,
   open,
   options: {
-    host: '//widget.afrostream.tv/',
+    host: '//localhost:9999/',
+    //host: '//widget.afrostream.tv/',
     path: '/dist/index.v.html'
   }
 }
