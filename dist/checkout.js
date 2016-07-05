@@ -18,28 +18,34 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var name = 'Afrostream Checkout Widget';
 var version = '1.0';
 
-var open = function open() {
+var configure = function configure() {
   this.host = this.options.host;
   this.path = this.options.path;
-  console.log(this.name, this.host);
-  this.view = new _iframe2.default(this.host, this.path);
-  this.button = new _button2.default(this.view);
+  if (!this.view) {
+    this.view = new _iframe2.default(this.host, this.path);
+  }
+  if (!this.button) {
+    this.button = new _button2.default(this.view);
+  }
+  return this.view;
 };
 
-var myObject = {
+var AfrostreamCheckout = {
   name: name,
   version: version,
-  open: open,
+  configure: configure,
   options: {
-    host: '//localhost:9999/',
-    //host: '//widget.afrostream.tv/',
+    //host: 'http://localhost:9999/',
+    host: '//widget.afrostream.tv/',
     path: '/dist/index.v.html'
   }
 };
 
-myObject.open();
+window.AfrostreamCheckout = AfrostreamCheckout;
 
-exports.default = myObject;
+AfrostreamCheckout.configure();
+
+exports.default = AfrostreamCheckout;
 
 },{"./core/button":2,"./core/iframe":4}],2:[function(require,module,exports){
 'use strict';
@@ -111,12 +117,25 @@ var Button = function () {
       if (!this.nostyle) {
         this.$el.style.visibility = 'hidden';
         this.$span.style.display = 'block';
-        this.$span.style.minHeight = '30px';
+        this.$span.style.minHeight = (this.options.height || 30) + 'px';
       }
+
       this.$style = document.createElement('link');
       this.$style.setAttribute('type', 'text/css');
       this.$style.setAttribute('rel', 'stylesheet');
       this.$style.setAttribute('href', this.view.getHost() + 'dist/checkout.min.css');
+      if (this.options.src) {
+        this.$img = document.createElement('img');
+        this.$img.setAttribute('src', this.options.src);
+        _utils2.default.addClass(this.$el, 'image');
+        if (this.options.height) {
+          this.$img.setAttribute('height', this.options.height);
+        }
+        if (this.options.width) {
+          this.$img.setAttribute('width', this.options.width);
+        }
+        _utils2.default.append(this.$el, this.$img);
+      }
       return _utils2.default.append(this.$el, this.$span);
     }
   }, {
@@ -719,7 +738,7 @@ var IframeView = function () {
       _helpers2.default.bind(iframe, 'load', function () {
         return iframe.style.visibility = 'visible';
       });
-      iframe.src = this.host + this.path + '?key=' + this.options.key;
+      iframe.src = this.host + this.path + (this.options && this.options.key ? '?key=' + this.options.key : '');
       iframe.className = iframe.name = 'stripe_checkout_app';
 
       iframe.onload = iframe.onreadystatechange = function () {
@@ -738,6 +757,7 @@ var IframeView = function () {
     value: function open() {
       var _this2 = this;
 
+      var _ref = void 0;
       this.originalOverflowValue = document.body.style.overflow;
       if (this.frame == null) {
         this.configure();

@@ -118,7 +118,7 @@ export default class IframeView {
     helpers.bind(iframe, 'load', function () {
       return iframe.style.visibility = 'visible'
     })
-    iframe.src = this.host + this.path + '?key=' + this.options.key
+    iframe.src = this.host + this.path + (this.options && this.options.key ? '?key=' + this.options.key : '')
     iframe.className = iframe.name = 'stripe_checkout_app'
 
     iframe.onload = iframe.onreadystatechange = ()=> {
@@ -134,6 +134,7 @@ export default class IframeView {
   }
 
   open () {
+    let _ref
     this.originalOverflowValue = document.body.style.overflow
     if (this.frame == null) {
       this.configure()

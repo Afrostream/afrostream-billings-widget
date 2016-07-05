@@ -45,12 +45,25 @@ class Button {
     if (!this.nostyle) {
       this.$el.style.visibility = 'hidden'
       this.$span.style.display = 'block'
-      this.$span.style.minHeight = '30px'
+      this.$span.style.minHeight = (this.options.height || 30) + 'px'
     }
+
     this.$style = document.createElement('link')
     this.$style.setAttribute('type', 'text/css')
     this.$style.setAttribute('rel', 'stylesheet')
     this.$style.setAttribute('href', this.view.getHost() + 'dist/checkout.min.css')
+    if (this.options.src) {
+      this.$img = document.createElement('img')
+      this.$img.setAttribute('src', this.options.src)
+      utils.addClass(this.$el, 'image')
+      if (this.options.height) {
+        this.$img.setAttribute('height', this.options.height)
+      }
+      if (this.options.width) {
+        this.$img.setAttribute('width', this.options.width)
+      }
+      utils.append(this.$el, this.$img)
+    }
     return utils.append(this.$el, this.$span)
   }
 

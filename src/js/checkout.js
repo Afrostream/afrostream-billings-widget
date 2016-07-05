@@ -4,26 +4,31 @@ import Button from './core/button'
 const name = 'Afrostream Checkout Widget'
 const version = '1.0'
 
-const open = function () {
+const configure = function () {
   this.host = this.options.host
   this.path = this.options.path
-  console.log(this.name, this.host)
-  this.view = new IframeView(this.host, this.path)
-  this.button = new Button(this.view)
+  if (!this.view) {
+    this.view = new IframeView(this.host, this.path)
+  }
+  if (!this.button) {
+    this.button = new Button(this.view)
+  }
+  return this.view;
 }
 
-const myObject = {
+const AfrostreamCheckout = {
   name,
   version,
-  open,
+  configure,
   options: {
-    host: '//localhost:9999/',
-    //host: '//widget.afrostream.tv/',
+    //host: 'http://localhost:9999/',
+    host: '//widget.afrostream.tv/',
     path: '/dist/index.v.html'
   }
 }
 
+window.AfrostreamCheckout = AfrostreamCheckout
 
-myObject.open()
+AfrostreamCheckout.configure()
 
-export default myObject
+export default AfrostreamCheckout

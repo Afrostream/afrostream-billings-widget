@@ -4,12 +4,39 @@
   <meta charset="UTF-8">
   <title>Demo</title>
 </head>
+<script src="https://code.jquery.com/jquery-3.0.0.min.js"
+        integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
 <body>
 <div>
   <script
     src="dist/checkout.js" class="afrostream-button"
-    data-key="pk_test_04tEcTg2MNXukUdpkt4h60w2"
     data-label="S'abonner à Afrostream">
+  </script>
+
+  <button id="customButton">Purchase</button>
+
+  <script
+    class="afrostream-button"
+    src="dist/checkout.js"
+    data-src="//afrostream.imgix.net/production/poster/2016/04/2e4610f95cc8946a69ba-Screen%20Shot%202016-04-12%20at%2023.34.21%20%281%29.png?crop=faces&fit=clip&w=1280&q=65&fm=jpg"
+    data-width="300"
+    data-height="250"
+    data-label="S'abonner à Afrostream">
+  </script>
+
+  <script>
+    var handler = AfrostreamCheckout.configure({});
+
+    $('#customButton').on('click', function (e) {
+      // Open Checkout with further options:
+      handler.open();
+      e.preventDefault();
+    });
+
+    // Close Checkout on page navigation:
+    $(window).on('popstate', function () {
+      handler.close();
+    });
   </script>
 </div>
 </body>
