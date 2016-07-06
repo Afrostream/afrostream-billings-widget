@@ -62,7 +62,7 @@ class Button {
       if (this.options.width) {
         this.$img.setAttribute('width', this.options.width)
       }
-      utils.append(this.$el, this.$img)
+      return utils.append(this.$el, this.$img)
     }
     return utils.append(this.$el, this.$span)
   }

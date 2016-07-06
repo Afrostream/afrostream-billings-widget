@@ -16,12 +16,31 @@
   <button id="customButton">Purchase</button>
 
   <script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+    data-key="pk_test_04tEcTg2MNXukUdpkt4h60w2"
+    data-amount="999"
+    data-name="Afrostream inc"
+    data-description="Widget"
+    data-image="https://s3.amazonaws.com/stripe-uploads/acct_168w7fHxrhu7N7iImerchant-icon-1435430812550-AFROSTREAM-VisuSite-3.jpg"
+    data-locale="auto">
+  </script>
+
+  <script
     class="afrostream-button"
     src="dist/checkout.js"
     data-src="//afrostream.imgix.net/production/poster/2016/04/2e4610f95cc8946a69ba-Screen%20Shot%202016-04-12%20at%2023.34.21%20%281%29.png?crop=faces&fit=clip&w=1280&q=65&fm=jpg"
     data-width="300"
     data-height="250"
     data-label="S'abonner à Afrostream">
+  </script>
+
+  <script
+    class="afrostream-button"
+    src="dist/checkout.js"
+    data-src="/images/Afrostream_TLAM_Interstitiel_tablette_300x250_300dpi.jpg"
+    data-width="300"
+    data-height="250"
+  >
   </script>
 
   <script>

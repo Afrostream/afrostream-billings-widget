@@ -9,21 +9,47 @@ var _iframe = require('./core/iframe');
 
 var _iframe2 = _interopRequireDefault(_iframe);
 
+var _fallbackView = require('./core/fallbackView');
+
+var _fallbackView2 = _interopRequireDefault(_fallbackView);
+
+var _tabView = require('./core/tabView');
+
+var _tabView2 = _interopRequireDefault(_tabView);
+
 var _button = require('./core/button');
 
 var _button2 = _interopRequireDefault(_button);
+
+var _helpers = require('./core/helpers');
+
+var _helpers2 = _interopRequireDefault(_helpers);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var name = 'Afrostream Checkout Widget';
 var version = '1.0';
 
+var createView = function createView(host, path) {
+  var viewClass = void 0;
+  var shouldPopup = _helpers2.default.isSupportedMobileOS() && !(_helpers2.default.isNativeWebContainer() || _helpers2.default.isAndroidWebapp() || _helpers2.default.isiOSWebView() || _helpers2.default.isiOSBroken());
+  if (_helpers2.default.isFallback()) {
+    viewClass = _fallbackView2.default;
+  } else {
+    if (shouldPopup) {
+      viewClass = _tabView2.default;
+    } else {
+      viewClass = _iframe2.default;
+    }
+  }
+
+  return new viewClass(host, path);
+};
+
 var configure = function configure() {
   this.host = this.options.host;
   this.path = this.options.path;
-  if (!this.view) {
-    this.view = new _iframe2.default(this.host, this.path);
-  }
+  this.view = createView(this.host, this.path);
   if (!this.button) {
     this.button = new _button2.default(this.view);
   }
@@ -35,7 +61,6 @@ var AfrostreamCheckout = {
   version: version,
   configure: configure,
   options: {
-    //host: 'http://localhost:9999/',
     host: '//widget.afrostream.tv/',
     path: '/dist/index.v.html'
   }
@@ -47,7 +72,7 @@ AfrostreamCheckout.configure();
 
 exports.default = AfrostreamCheckout;
 
-},{"./core/button":2,"./core/iframe":4}],2:[function(require,module,exports){
+},{"./core/button":2,"./core/fallbackView":4,"./core/helpers":5,"./core/iframe":6,"./core/tabView":8}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -134,7 +159,7 @@ var Button = function () {
         if (this.options.width) {
           this.$img.setAttribute('width', this.options.width);
         }
-        _utils2.default.append(this.$el, this.$img);
+        return _utils2.default.append(this.$el, this.$img);
       }
       return _utils2.default.append(this.$el, this.$span);
     }
@@ -252,7 +277,137 @@ var Button = function () {
 
 exports.default = Button;
 
-},{"./helpers":3,"./utils":6}],3:[function(require,module,exports){
+},{"./helpers":5,"./utils":9}],3:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _helpers = require('./helpers');
+
+var _helpers2 = _interopRequireDefault(_helpers);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var FallbackRPC = function () {
+  function FallbackRPC(target, host) {
+    _classCallCheck(this, FallbackRPC);
+
+    this.target = target;
+    this.host = host;
+  }
+
+  _createClass(FallbackRPC, [{
+    key: 'invokeTarget',
+    value: function invokeTarget(message) {
+      var url = void 0;
+      message = +new Date() + cacheBust++ + '&' + encodeURIComponent(message);
+      url = this.host + '';
+      return this.target.location = url.replace(/#.*$/, '') + '#' + message;
+    }
+  }, {
+    key: 'receiveMessage',
+    value: function receiveMessage(callback, delay) {
+      if (delay == null) {
+        delay = 100;
+      }
+      interval && clearInterval(interval);
+      return interval = setInterval(function () {
+        var hash = decodeURIComponent(window.location.hash);
+        if (hash !== lastHash && re.test(hash)) {
+          window.location.hash = '';
+          lastHash = hash;
+          return callback({
+            data: hash.replace(re, '')
+          });
+        }
+      }, delay);
+    }
+  }]);
+
+  return FallbackRPC;
+}();
+
+exports.default = FallbackRPC;
+
+},{"./helpers":5}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _helpers = require('./helpers');
+
+var _helpers2 = _interopRequireDefault(_helpers);
+
+var _utils = require('./utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+var _view2 = require('./view');
+
+var _view3 = _interopRequireDefault(_view2);
+
+var _fallbackRpc = require('./fallbackRpc');
+
+var _fallbackRpc2 = _interopRequireDefault(_fallbackRpc);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var FallbackView = function (_view) {
+  _inherits(FallbackView, _view);
+
+  function FallbackView() {
+    _classCallCheck(this, FallbackView);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(FallbackView).apply(this, arguments));
+  }
+
+  _createClass(FallbackView, [{
+    key: 'open',
+    value: function open(options, callback) {
+      var message = void 0,
+          url = void 0;
+      url = this.host + this.path + (this.options && this.options.key ? '?key=' + this.options.key : '');
+      this.frame = window.open(url, 'afrostream_checkout_app', 'width=400,height=400,location=yes,resizable=yes,scrollbars=yes');
+      if (this.frame == null) {
+        alert('Disable your popup blocker to proceed with checkout.');
+        url = 'support@afrostream.tv';
+        throw new Error('To learn how to prevent the Stripe Checkout popup from being blocked, please call ' + url);
+      }
+      this.rpc = new _fallbackRpc2.default(this.frame, url);
+      message = JSON.stringify(this.options);
+      this.rpc.invokeTarget(message);
+      return callback(true);
+    }
+  }, {
+    key: 'close',
+    value: function close() {
+      var _ref = void 0;
+      return (_ref = this.frame) != null ? _ref.close() : void 0;
+    }
+  }]);
+
+  return FallbackView;
+}(_view3.default);
+
+exports.default = FallbackView;
+
+},{"./fallbackRpc":3,"./helpers":5,"./utils":9,"./view":10}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -581,7 +736,7 @@ var helpers = {
 
 exports.default = helpers;
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -602,29 +757,28 @@ var _rpc = require('./rpc');
 
 var _rpc2 = _interopRequireDefault(_rpc);
 
+var _view2 = require('./view');
+
+var _view3 = _interopRequireDefault(_view2);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var IframeView = function () {
-  function IframeView(host, path) {
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var IframeView = function (_view) {
+  _inherits(IframeView, _view);
+
+  function IframeView() {
     _classCallCheck(this, IframeView);
 
-    this.host = host;
-    this.path = path;
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(IframeView).apply(this, arguments));
   }
 
   _createClass(IframeView, [{
-    key: 'getHost',
-    value: function getHost() {
-      return this.host;
-    }
-  }, {
-    key: 'setHost',
-    value: function setHost(host) {
-      return this.host = host;
-    }
-  }, {
     key: 'showTouchOverlay',
     value: function showTouchOverlay() {
       if (this.overlay) {
@@ -721,7 +875,7 @@ var IframeView = function () {
   }, {
     key: 'attachIframe',
     value: function attachIframe() {
-      var _this = this;
+      var _this2 = this;
 
       var cssText = void 0;
       var iframe = void 0;
@@ -739,13 +893,13 @@ var IframeView = function () {
         return iframe.style.visibility = 'visible';
       });
       iframe.src = this.host + this.path + (this.options && this.options.key ? '?key=' + this.options.key : '');
-      iframe.className = iframe.name = 'stripe_checkout_app';
+      iframe.className = iframe.name = 'afrostream_checkout_app';
 
       iframe.onload = iframe.onreadystatechange = function () {
-        var rs = _this.readyState;
+        var rs = _this2.readyState;
         if (!rs || /loaded|complete/.test(rs)) {
           iframe.onload = iframe.onreadystatechange = null;
-          _this.loaded = true;
+          _this2.loaded = true;
         }
       };
 
@@ -755,7 +909,7 @@ var IframeView = function () {
   }, {
     key: 'open',
     value: function open() {
-      var _this2 = this;
+      var _this3 = this;
 
       var _ref = void 0;
       this.originalOverflowValue = document.body.style.overflow;
@@ -778,28 +932,28 @@ var IframeView = function () {
       }
 
       setTimeout(function () {
-        if (_this2.loaded) {
+        if (_this3.loaded) {
           return;
         }
-        return _this2.removeFrame();
+        return _this3.removeFrame();
       }, 8e3);
 
       return this.rpc.ready(function () {
-        _this2.rpc.invoke('render', '', 'iframe', _this2.options);
+        _this3.rpc.invoke('render', '', 'iframe', _this3.options);
         if (_helpers2.default.isIE()) {
           document.body.style.overflow = 'hidden';
         }
-        return _this2.rpc.invoke('open', {});
+        return _this3.rpc.invoke('open', {});
       });
     }
   }]);
 
   return IframeView;
-}();
+}(_view3.default);
 
 exports.default = IframeView;
 
-},{"./helpers":3,"./rpc":5,"./utils":6}],5:[function(require,module,exports){
+},{"./helpers":5,"./rpc":7,"./utils":9,"./view":10}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -955,7 +1109,144 @@ window.RPC = RPC;
 
 exports.default = RPC;
 
-},{"./helpers":3}],6:[function(require,module,exports){
+},{"./helpers":5}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _helpers = require('./helpers');
+
+var _helpers2 = _interopRequireDefault(_helpers);
+
+var _rpc = require('./rpc');
+
+var _rpc2 = _interopRequireDefault(_rpc);
+
+var _view2 = require('./view');
+
+var _view3 = _interopRequireDefault(_view2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TabView = function (_view) {
+  _inherits(TabView, _view);
+
+  function TabView(host, path) {
+    _classCallCheck(this, TabView);
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TabView).call(this, host, path));
+
+    _this.closedTabInterval = null;
+    return _this;
+  }
+
+  _createClass(TabView, [{
+    key: 'open',
+    value: function open(options) {
+      var _this2 = this;
+
+      var callback = arguments.length <= 1 || arguments[1] === undefined ? function () {} : arguments[1];
+
+      var targetName = void 0,
+          url = void 0,
+          _base = void 0,
+          _ref = void 0,
+          _ref1 = void 0;
+      try {
+        if ((_ref = this.frame) != null) {
+          _ref.close();
+        }
+      } catch (_error) {}
+      if (window.name === 'afrostream_checkout_tabview') {
+        window.name = '';
+      }
+      if (_helpers2.default.isiOSChrome()) {
+        targetName = '_blank';
+      } else {
+        targetName = 'stripe_checkout_tabview';
+      }
+      this.frame = window.open(this.fullPath(), targetName);
+      if (!this.frame && ((_ref1 = this.options.key) != null ? _ref1.indexOf('test') : void 0) !== -1) {
+        url = 'https://stripe.com/docs/checkout#integration-more-runloop';
+        console.error('Stripe Checkout was unable to open a new window, possibly due to a popup blocker.\nTo provide the best experience for your users, follow the guide at ' + url + '.\nThis message will only appear when using a test publishable key.');
+      }
+      if (!this.frame || this.frame === window) {
+        this.close();
+        callback(false);
+        return;
+      }
+      if (typeof (_base = this.frame).focus === 'function') {
+        _base.focus();
+      }
+      this.rpc = new _rpc2.default(this.frame, {
+        host: this.host
+      });
+      this.rpc.methods.closed = this.closed;
+      this.rpc.ready(function () {
+        var _base1 = void 0;
+        callback(true);
+        _this2.rpc.invoke('render', '', 'tab', _this2.options);
+        _this2.rpc.invoke('open');
+        if (typeof (_base1 = _this2.options).opened === 'function') {
+          _base1.opened();
+        }
+        return _this2.checkForClosedTab();
+      });
+    }
+  }, {
+    key: 'close',
+    value: function close() {
+      if (this.frame && this.frame !== window) {
+        return this.frame.close();
+      }
+    }
+  }, {
+    key: 'fullPath',
+    value: function fullPath() {
+      return this.host + this.path;
+    }
+  }, {
+    key: 'checkForClosedTab',
+    value: function checkForClosedTab() {
+      var _this3 = this;
+
+      if (this.closedTabInterval) {
+        clearInterval(this.closedTabInterval);
+      }
+      return this.closedTabInterval = setInterval(function () {
+        if (!_this3.frame || !_this3.frame.postMessage || _this3.frame.closed) {
+          return _this3.closed();
+        }
+      }, 100);
+    }
+  }, {
+    key: 'closed',
+    value: function closed() {
+      console.log('closed');
+      clearInterval(this.closedTabInterval);
+      clearTimeout(this.tokenTimeout);
+      if (this.token != null) {
+        this.onToken(this.token);
+      }
+    }
+  }]);
+
+  return TabView;
+}(_view3.default);
+
+exports.default = TabView;
+
+},{"./helpers":5,"./rpc":7,"./view":10}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1084,5 +1375,47 @@ exports.default = {
   resolve: resolve,
   text: text
 };
+
+},{}],10:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var view = function () {
+  function view(host, path) {
+    _classCallCheck(this, view);
+
+    this.host = host;
+    this.path = path;
+  }
+
+  _createClass(view, [{
+    key: "getHost",
+    value: function getHost() {
+      return this.host;
+    }
+  }, {
+    key: "setHost",
+    value: function setHost(host) {
+      return this.host = host;
+    }
+  }, {
+    key: "open",
+    value: function open(options, callback) {}
+  }, {
+    key: "configure",
+    value: function configure() {}
+  }]);
+
+  return view;
+}();
+
+exports.default = view;
 
 },{}]},{},[1]);

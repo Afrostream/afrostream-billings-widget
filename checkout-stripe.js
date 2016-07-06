@@ -3014,7 +3014,7 @@ AfrostreamCheckout.require.define({
           var message, url;
           FallbackView.__super__.open.apply(this, arguments);
           url = this.host + this.path;
-          this.frame = window.open(url, "stripe_checkout_app", "width=400,height=400,location=yes,resizable=yes,scrollbars=yes");
+          this.frame = window.open(url, "afrostream_checkout_app", "width=400,height=400,location=yes,resizable=yes,scrollbars=yes");
           if (this.frame == null) {
             alert("Disable your popup blocker to proceed with checkout.");
             url = "https://stripe.com/docs/checkout#integration-more-runloop";

@@ -1,20 +1,9 @@
 import helpers from './helpers'
 import utils from './utils'
 import RPC from './rpc'
+import view from './view'
 
-export default class IframeView {
-  constructor (host, path) {
-    this.host = host
-    this.path = path
-  }
-
-  getHost () {
-    return this.host
-  }
-
-  setHost (host) {
-    return this.host = host
-  }
+export default class IframeView extends view {
 
   showTouchOverlay () {
     if (this.overlay) {
@@ -119,7 +108,7 @@ export default class IframeView {
       return iframe.style.visibility = 'visible'
     })
     iframe.src = this.host + this.path + (this.options && this.options.key ? '?key=' + this.options.key : '')
-    iframe.className = iframe.name = 'stripe_checkout_app'
+    iframe.className = iframe.name = 'afrostream_checkout_app'
 
     iframe.onload = iframe.onreadystatechange = ()=> {
       let rs = this.readyState;
