@@ -107,7 +107,7 @@ export default class IframeView extends view {
     helpers.bind(iframe, 'load', function () {
       return iframe.style.visibility = 'visible'
     })
-    iframe.src = url = this.fullPath()
+    iframe.src = this.fullPath()
     iframe.className = iframe.name = 'afrostream_checkout_app'
 
     iframe.onload = iframe.onreadystatechange = ()=> {
