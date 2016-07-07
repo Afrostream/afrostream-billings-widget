@@ -114,7 +114,7 @@
 
       _loadPlan: function () {
         var xhr = this.$.xhr;
-        xhr.url = this.baseApi + 'couponscampaigns/' + this.couponsCampaignBillingUuid;
+        xhr.url = this.baseApi + 'couponscampaigns/' + (this.qs().coupon || this.couponsCampaignBillingUuid);
       },
 
       showError: function (error) {

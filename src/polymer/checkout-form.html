@@ -285,7 +285,7 @@
         return {
           billingProviderName: this.billingProviderName,
           userBillingUuid: this.userReferenceUuid,
-          couponsCampaignBillingUuid: this.couponsCampaignBillingUuid,
+          couponsCampaignBillingUuid: this.qs().coupon || this.couponsCampaignBillingUuid,
           couponsOpts: {
             customerBankAccountToken: this.$.token.value,
             recipientEmail: email,

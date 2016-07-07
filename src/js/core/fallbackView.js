@@ -7,7 +7,7 @@ export default class FallbackView extends view {
 
   open (options, callback) {
     let message, url
-    url = this.host + this.path + (this.options && this.options.key ? '?key=' + this.options.key : '')
+    url = this.fullPath()
     this.frame = window.open(url, 'afrostream_checkout_app', 'width=400,height=400,location=yes,resizable=yes,scrollbars=yes')
     if (this.frame == null) {
       alert('Disable your popup blocker to proceed with checkout.')

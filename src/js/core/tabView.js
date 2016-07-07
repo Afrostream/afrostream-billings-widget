@@ -60,10 +60,6 @@ export default class TabView extends view {
     }
   }
 
-  fullPath () {
-    return this.host + this.path
-  }
-
   checkForClosedTab () {
     if (this.closedTabInterval) {
       clearInterval(this.closedTabInterval)
