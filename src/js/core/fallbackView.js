@@ -1,5 +1,3 @@
-import helpers from './helpers'
-import utils from './utils'
 import view from './view'
 import FallbackRPC from './fallbackRpc'
 

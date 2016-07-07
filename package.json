@@ -6,7 +6,7 @@
   "scripts": {
     "mkdirs": "mkdir -p dist",
     "start": "babel-node --presets es2015 -- scripts/server.js",
-    "dev": "echo 'requiring node v4.4.5' && . ~/.nvm/nvm.sh && nvm use 4.4.5 && npm-run-all -p build start watch",
+    "dev": "echo 'requiring node v4.4.5' && . ~/.nvm/nvm.sh && nvm use 4.4.5 && npm-run-all -p start watch",
     "watch": "npm run mkdirs && npm-run-all -p watch:*",
     "watch:js": "watchify -v -t babelify src/js/checkout.js -o dist/checkout.js",
     "watch:css": "catw -w 'src/css/**/*.less' -c 'npm run build:css'",
@@ -16,7 +16,7 @@
     "build:js": "browserify src/js/checkout.js -o dist/checkout.js",
     "build:css": "lessc src/css/checkout.less dist/checkout.min.css",
     "build:rpc": "browserify src/js/core/rpc.js -o dist/rpc.js",
-    "postinstall": "bower install && npm run build"
+    "postinstall": "bower install && npm run build && npm run envify"
   },
   "keywords": [
     "afrostream",
@@ -40,6 +40,12 @@
             "es2015"
           ]
         }
+      ],
+      [
+         "envify",
+        {
+          "--NODE_ENV":[ "development" ]
+        }
       ]
     ]
   },
@@ -53,6 +59,7 @@
     "connect": "^3.4.1",
     "cowsay": "^1.1.8",
     "crisper": "^2.0.2",
+    "envify": "^3.4.1",
     "less": "^2.7.1",
     "less-plugin-clean-css": "^1.5.1",
     "npm-run-all": "^2.3.0",

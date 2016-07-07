@@ -1,4 +1,126 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+(function () {
+  try {
+    cachedSetTimeout = setTimeout;
+  } catch (e) {
+    cachedSetTimeout = function () {
+      throw new Error('setTimeout is not defined');
+    }
+  }
+  try {
+    cachedClearTimeout = clearTimeout;
+  } catch (e) {
+    cachedClearTimeout = function () {
+      throw new Error('clearTimeout is not defined');
+    }
+  }
+} ())
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = cachedSetTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    cachedClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        cachedSetTimeout(drainQueue, 0);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],2:[function(require,module,exports){
+(function (process){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -61,9 +183,9 @@ var AfrostreamCheckout = {
   version: version,
   configure: configure,
   options: {
-    host: '//widget.afrostream.tv/',
-    path: '/dist/index.v.html'
-  }
+    host: process.env.NODE_ENV === 'production' ? '//widget.afrostream.tv/' : '/'
+  },
+  path: '/dist/index.v.html'
 };
 
 window.AfrostreamCheckout = AfrostreamCheckout;
@@ -72,7 +194,8 @@ AfrostreamCheckout.configure();
 
 exports.default = AfrostreamCheckout;
 
-},{"./core/button":2,"./core/fallbackView":4,"./core/helpers":5,"./core/iframe":6,"./core/tabView":8}],2:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"./core/button":3,"./core/fallbackView":5,"./core/helpers":6,"./core/iframe":7,"./core/tabView":9,"_process":1}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -277,7 +400,7 @@ var Button = function () {
 
 exports.default = Button;
 
-},{"./helpers":5,"./utils":9}],3:[function(require,module,exports){
+},{"./helpers":6,"./utils":10}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -335,7 +458,7 @@ var FallbackRPC = function () {
 
 exports.default = FallbackRPC;
 
-},{"./helpers":5}],4:[function(require,module,exports){
+},{"./helpers":6}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -343,14 +466,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _helpers = require('./helpers');
-
-var _helpers2 = _interopRequireDefault(_helpers);
-
-var _utils = require('./utils');
-
-var _utils2 = _interopRequireDefault(_utils);
 
 var _view2 = require('./view');
 
@@ -382,7 +497,7 @@ var FallbackView = function (_view) {
     value: function open(options, callback) {
       var message = void 0,
           url = void 0;
-      url = this.host + this.path + (this.options && this.options.key ? '?key=' + this.options.key : '');
+      url = this.fullPath();
       this.frame = window.open(url, 'afrostream_checkout_app', 'width=400,height=400,location=yes,resizable=yes,scrollbars=yes');
       if (this.frame == null) {
         alert('Disable your popup blocker to proceed with checkout.');
@@ -407,7 +522,7 @@ var FallbackView = function (_view) {
 
 exports.default = FallbackView;
 
-},{"./fallbackRpc":3,"./helpers":5,"./utils":9,"./view":10}],5:[function(require,module,exports){
+},{"./fallbackRpc":4,"./view":11}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -736,7 +851,7 @@ var helpers = {
 
 exports.default = helpers;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -892,7 +1007,7 @@ var IframeView = function (_view) {
       _helpers2.default.bind(iframe, 'load', function () {
         return iframe.style.visibility = 'visible';
       });
-      iframe.src = this.host + this.path + (this.options && this.options.key ? '?key=' + this.options.key : '');
+      iframe.src = this.fullPath();
       iframe.className = iframe.name = 'afrostream_checkout_app';
 
       iframe.onload = iframe.onreadystatechange = function () {
@@ -953,7 +1068,7 @@ var IframeView = function (_view) {
 
 exports.default = IframeView;
 
-},{"./helpers":5,"./rpc":7,"./utils":9,"./view":10}],7:[function(require,module,exports){
+},{"./helpers":6,"./rpc":8,"./utils":10,"./view":11}],8:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1109,7 +1224,7 @@ window.RPC = RPC;
 
 exports.default = RPC;
 
-},{"./helpers":5}],8:[function(require,module,exports){
+},{"./helpers":6}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1211,11 +1326,6 @@ var TabView = function (_view) {
       }
     }
   }, {
-    key: 'fullPath',
-    value: function fullPath() {
-      return this.host + this.path;
-    }
-  }, {
     key: 'checkForClosedTab',
     value: function checkForClosedTab() {
       var _this3 = this;
@@ -1246,7 +1356,7 @@ var TabView = function (_view) {
 
 exports.default = TabView;
 
-},{"./helpers":5,"./rpc":7,"./view":10}],9:[function(require,module,exports){
+},{"./helpers":6,"./rpc":8,"./view":11}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1376,8 +1486,8 @@ exports.default = {
   text: text
 };
 
-},{}],10:[function(require,module,exports){
-"use strict";
+},{}],11:[function(require,module,exports){
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -1396,20 +1506,25 @@ var view = function () {
   }
 
   _createClass(view, [{
-    key: "getHost",
+    key: 'getHost',
     value: function getHost() {
       return this.host;
     }
   }, {
-    key: "setHost",
+    key: 'setHost',
     value: function setHost(host) {
       return this.host = host;
     }
   }, {
-    key: "open",
+    key: 'fullPath',
+    value: function fullPath() {
+      return this.host + this.path + (this.options && this.options.key ? '?key=' + this.options.key : '') + (this.options && this.options.coupon ? '?coupon=' + this.options.coupon : '');
+    }
+  }, {
+    key: 'open',
     value: function open(options, callback) {}
   }, {
-    key: "configure",
+    key: 'configure',
     value: function configure() {}
   }]);
 
@@ -1418,4 +1533,4 @@ var view = function () {
 
 exports.default = view;
 
-},{}]},{},[1]);
+},{}]},{},[2]);

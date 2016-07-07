@@ -38,9 +38,9 @@ const AfrostreamCheckout = {
   version,
   configure,
   options: {
-    host: '//widget.afrostream.tv/',
-    path: '/dist/index.v.html'
-  }
+    host: process.env.NODE_ENV === 'production' ? '//widget.afrostream.tv/' : '/'
+  },
+  path: '/dist/index.v.html'
 }
 
 window.AfrostreamCheckout = AfrostreamCheckout
